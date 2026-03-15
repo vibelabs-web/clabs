@@ -140,4 +140,4 @@ asarUnpack:
 
 # 메타데이터
 extraMetadata:
-  main: dist/main/index.js
+  main: dist/main/src/main/index.js
