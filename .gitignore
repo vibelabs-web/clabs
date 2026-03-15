@@ -1,0 +1,64 @@
+# @TASK P4-T3 - Git 제외 파일 목록
+
+# 의존성
+node_modules/
+
+# 빌드 결과물
+dist/
+release/
+*.dmg
+*.pkg
+*.exe
+*.deb
+*.AppImage
+*.snap
+
+# 환경변수 (절대 커밋 금지!)
+.env
+.env.local
+.env.*.local
+
+# 인증서 (절대 커밋 금지!)
+*.p12
+*.cer
+*.certSigningRequest
+*.mobileprovision
+
+# 로그
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 에디터
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 테스트 결과
+coverage/
+test-results/
+test-results.json
+playwright-report/
+junit-results.xml
+
+# 빌드 캐시
+*.tsbuildinfo
+
+# 임시 파일
+*.tmp
+*.temp
+.cache/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

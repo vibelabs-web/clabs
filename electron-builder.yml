@@ -1,0 +1,143 @@
+# @TASK P4-T2 - electron-builder 빌드 설정
+# @SPEC Phase 4: 패키징 및 배포 - 크로스 플랫폼 빌드 설정
+
+appId: com.claudelabs.clabs
+productName: Clabs
+copyright: Copyright © 2026 Claude Labs
+
+# 출력 디렉토리
+directories:
+  output: release
+  buildResources: build
+
+# 빌드에 포함할 파일
+files:
+  - dist/**/*
+  - node_modules/**/*
+  - package.json
+  - "!**/*.{ts,tsx,map}"
+  - "!src"
+  - "!tests"
+  - "!*.md"
+  - "!.github"
+  - "!.vscode"
+
+# Mac 빌드 설정
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg      # macOS 디스크 이미지
+    - pkg      # macOS 인스톤 패키지
+  icon: build/icon.icns
+  artifactName: "${productName}-${version}-mac-${arch}.${ext}"
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+# @TASK P4-T3 - 코드 서명 후 자동 공증
+afterSign: scripts/notarize.js
+
+# DMG 옵션
+dmg:
+  title: "${productName} ${version}"
+  icon: build/icon.icns
+  background: build/dmg-background.png
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 140
+      y: 180
+      type: file
+    - x: 400
+      y: 180
+      type: link
+      path: /Applications
+
+# PKG 옵션
+pkg:
+  installLocation: /Applications
+  allowAnywhere: false
+  allowCurrentUserHome: false
+  allowRootDirectory: false
+
+# Windows 빌드 설정
+win:
+  target:
+    - nsis      # Windows 인스톨러
+    - portable  # 포터블 실행 파일
+  icon: build/icon.ico
+  artifactName: "${productName}-${version}-win-${arch}.${ext}"
+  publisherName: Claude Labs
+  verifyUpdateCodeSignature: false
+
+# NSIS 인스톨러 옵션
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Clabs
+  license: LICENSE
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  deleteAppDataOnUninstall: true
+  include: build/installer.nsh
+  # 안정성 옵션
+  runAfterFinish: false
+  differentialPackage: false
+
+# 포터블 옵션
+portable:
+  artifactName: "${productName}-${version}-portable.exe"
+
+# Linux 빌드 설정
+linux:
+  target:
+    - AppImage  # 범용 리눅스 실행 파일
+    - deb       # Debian/Ubuntu 패키지
+  icon: build/icon.png
+  category: Development
+  synopsis: Claude Labs Skillpack GUI - AI 개발 파트너
+  description: Anthropic Claude를 위한 스킬팩 관리 도구
+  artifactName: "${productName}-${version}-linux-${arch}.${ext}"
+  maintainer: Claude Labs <labs@claude.ai>
+
+# AppImage 옵션
+appImage:
+  license: LICENSE
+  category: Development
+
+# Debian 패키지 옵션
+deb:
+  depends:
+    - libgtk-3-0
+    - libnotify4
+    - libnss3
+    - libxss1
+    - libxtst6
+    - xdg-utils
+    - libatspi2.0-0
+    - libuuid1
+  afterInstall: build/linux/after-install.sh
+  afterRemove: build/linux/after-remove.sh
+
+# 자동 업데이트 비활성화 (GitHub 리포 없음)
+# publish:
+#   provider: github
+#   owner: claudelabs
+#   repo: clabs
+#   releaseType: release
+
+# 압축 옵션
+compression: normal
+asar: true
+asarUnpack:
+  - "**/*.node"
+
+# 메타데이터
+extraMetadata:
+  main: dist/main/index.js
